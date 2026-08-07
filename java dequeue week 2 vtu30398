@@ -1,44 +1,42 @@
 import java.util.*;
-import java.util.Objects;
-
-class Pair {
-    String first, second;
-
-    Pair(String first, String second) {
-        this.first = first;
-        this.second = second;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Pair)) return false;
-        Pair p = (Pair) o;
-        return Objects.equals(first, p.first) &&
-               Objects.equals(second, p.second);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(first, second);
-    }
-}
 
 public class Solution {
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int T = sc.nextInt();
+        Scanner in = new Scanner(System.in);
 
-        Set<Pair> set = new HashSet<>();
+        int n = in.nextInt();
+        int m = in.nextInt();
 
-        while (T-- > 0) {
-            String left = sc.next();
-            String right = sc.next();
+        Deque<Integer> deque = new ArrayDeque<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
 
-            set.add(new Pair(left, right));
-            System.out.println(set.size());
+        int maxUnique = 0;
+
+        for (int i = 0; i < n; i++) {
+            int num = in.nextInt();
+
+            // Add new element
+            deque.addLast(num);
+            map.put(num, map.getOrDefault(num, 0) + 1);
+
+            // Remove oldest element if window size exceeds m
+            if (deque.size() > m) {
+                int removed = deque.removeFirst();
+                map.put(removed, map.get(removed) - 1);
+
+                if (map.get(removed) == 0) {
+                    map.remove(removed);
+                }
+            }
+
+            // Update maximum unique count
+            if (deque.size() == m) {
+                maxUnique = Math.max(maxUnique, map.size());
+            }
         }
 
-        sc.close();
+        System.out.println(maxUnique);
+        in.close();
     }
+}    
